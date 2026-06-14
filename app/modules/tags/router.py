@@ -8,11 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import User
+from app.paths import TEMPLATES_DIR
 from app.modules.auth.service import get_current_user
 from app.modules.tags.service import create_tag, get_tag_or_404, get_user_tags
 
 router = APIRouter(prefix="/tags", tags=["tags"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 @router.get("/", response_class=HTMLResponse)

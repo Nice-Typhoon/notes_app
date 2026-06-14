@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import User
+from app.paths import TEMPLATES_DIR
 from app.modules.auth.service import get_current_user
 from app.modules.notifications.service import get_unread_notifications_count
 from app.modules.reminders.service import (
@@ -20,7 +21,7 @@ from app.modules.reminders.service import (
 )
 
 router = APIRouter(prefix="/reminders", tags=["reminders"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 LOCAL_TZ = ZoneInfo("Europe/Moscow")
 
 @router.get("/note/{note_id}", response_class=HTMLResponse)

@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.database import get_db
 from app.models import User
+from app.paths import TEMPLATES_DIR
 from app.modules.auth.service import (
     authenticate_user,
     create_access_token,
@@ -17,7 +18,7 @@ from app.modules.auth.service import (
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 
 @router.get("/register", response_class=HTMLResponse)

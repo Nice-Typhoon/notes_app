@@ -7,6 +7,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.database import engine, Base
+from app.paths import STATIC_DIR
 from app.modules.auth.router import router as auth_router
 from app.modules.notes.router import router as notes_router
 from app.modules.tags.router import router as tags_router
@@ -33,7 +34,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Notes App", lifespan=lifespan)
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 app.include_router(auth_router)
 app.include_router(notes_router)

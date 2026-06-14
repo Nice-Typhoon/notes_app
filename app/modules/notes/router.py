@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models import User
+from app.paths import TEMPLATES_DIR
 from app.modules.auth.service import get_current_user
 from app.modules.tags.service import get_user_tags
 from app.modules.notes.service import (
@@ -21,7 +22,7 @@ from zoneinfo import ZoneInfo
 from app.modules.notifications.service import get_unread_notifications_count
 
 router = APIRouter(prefix="/notes", tags=["notes"])
-templates = Jinja2Templates(directory="app/templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 LOCAL_TZ = ZoneInfo("Europe/Moscow")
 
 @router.get("/", response_class=HTMLResponse)

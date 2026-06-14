@@ -5,7 +5,7 @@ import os
 class Settings(BaseSettings):
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://notes_user:notes_pass@localhost:5432/notes_db"
+        "sqlite+aiosqlite:///./notes.db"
     )
     SECRET_KEY: str = os.getenv("SECRET_KEY", "super-secret-key-change-in-production")
     ALGORITHM: str = "HS256"

@@ -7,9 +7,9 @@
 | Слой | Технология |
 |------|-----------|
 | Backend | **FastAPI** (Python 3.12) |
-| ORM | **SQLAlchemy 2.x** (async) + **asyncpg** |
+| ORM | **SQLAlchemy 2.x** (async) + **aiosqlite** |
 | Валидация | **Pydantic v2** |
-| База данных | **PostgreSQL 16** |
+| База данных | **SQLite** |
 | Шаблоны | **Jinja2** (серверный рендеринг) |
 | Аутентификация | **JWT** (python-jose + passlib/bcrypt) |
 | Миграции | **Alembic** |
@@ -58,23 +58,8 @@ pip install -r requirements.txt
 
 ### 2. База данных
 
-Запустите PostgreSQL и создайте БД:
-
-```sql
-CREATE USER notes_user WITH PASSWORD 'notes_pass';
-CREATE DATABASE notes_db OWNER notes_user;
-```
-
-Или через Docker:
-
-```bash
-docker run -d --name notes-pg \
-  -e POSTGRES_USER=notes_user \
-  -e POSTGRES_PASSWORD=notes_pass \
-  -e POSTGRES_DB=notes_db \
-  -p 5432:5432 \
-  postgres:16-alpine
-```
+Отдельно запускать сервер БД не нужно. SQLite хранит данные в файле `notes.db`,
+который создаётся автоматически при первом запуске приложения.
 
 ### 3. Переменные окружения
 
@@ -116,7 +101,7 @@ uvicorn app.main:app --reload
 
 | Переменная | По умолчанию | Описание |
 |-----------|-------------|---------|
-| `DATABASE_URL` | `postgresql+asyncpg://notes_user:notes_pass@localhost:5432/notes_db` | Строка подключения |
+| `DATABASE_URL` | `sqlite+aiosqlite:///./notes.db` | Строка подключения |
 | `SECRET_KEY` | `super-secret-key-...` | Секрет для JWT (обязательно сменить в prod) |
 | `ACCESS_TOKEN_EXPIRE_MINUTES` | `1440` | Срок жизни токена (24 ч) |
 | `SCHEDULER_INTERVAL_SECONDS` | `30` | Интервал проверки напоминаний |

@@ -2,10 +2,9 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import (
     Column, String, Text, Boolean, ForeignKey,
-    DateTime, Table, Integer
+    DateTime, Table, Uuid as UUID
 )
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 
 

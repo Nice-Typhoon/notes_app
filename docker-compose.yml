@@ -1,36 +1,14 @@
 version: "3.9"
 
 services:
-  db:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: notes_user
-      POSTGRES_PASSWORD: notes_pass
-      POSTGRES_DB: notes_db
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U notes_user -d notes_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   app:
     build: .
     restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
     environment:
-      DATABASE_URL: postgresql+asyncpg://notes_user:notes_pass@db:5432/notes_db
+      DATABASE_URL: sqlite+aiosqlite:///./data/notes.db
       SECRET_KEY: change-me-in-production-please
     ports:
       - "8000:8000"
     volumes:
       - ./app:/app/app  # hot-reload in development
-
-volumes:
-  pgdata:
+      - ./data:/app/data

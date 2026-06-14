@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Заметки{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% if user is defined and user %}
+    <script src="/static/js/notifications.js" defer></script>
+    {% endif %}
+</head>
+<body>
+{% if user is defined and user %}
+<nav class="navbar">
+    <div class="nav-brand">
+        <a href="/notes/">📝 Заметки</a>
+    </div>
+    <div class="nav-links">
+        <a href="/notes/" {% if request.url.path.startswith('/notes') %}class="active"{% endif %}>Заметки</a>
+        <a href="/tags/" {% if request.url.path.startswith('/tags') %}class="active"{% endif %}>Теги</a>
+        <a href="/notifications/" data-notifications-link class="notif-link {% if request.url.path.startswith('/notifications') %}active{% endif %}">
+            Уведомления
+            {% if unread_count is defined and unread_count > 0 %}
+                <span class="badge">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+        <button type="button" class="btn-link push-enable" data-push-enable hidden>Включить push</button>
+        <span class="nav-user">{{ user.full_name }}</span>
+        <form action="/auth/logout" method="post" style="display:inline">
+            <button type="submit" class="btn-link">Выйти</button>
+        </form>
+    </div>
+</nav>
+{% endif %}
+
+<main class="container">
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Теги{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Теги</h1>
+</div>
+
+<div class="two-col">
+    <div>
+        <h2>Создать тег</h2>
+        <form action="/tags/create" method="post" class="form tag-form">
+            <div class="form-group">
+                <label for="name">Название</label>
+                <input type="text" id="name" name="name" required placeholder="Например: работа">
+            </div>
+            <div class="form-group">
+                <label for="color">Цвет</label>
+                <input type="color" id="color" name="color" value="#6366f1">
+            </div>
+            <button type="submit" class="btn btn-primary">Создать</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>Мои теги</h2>
+        {% if tags %}
+        <ul class="tag-list">
+            {% for tag in tags %}
+            <li class="tag-list-item">
+                <span class="tag-badge" style="background: {{ tag.color }}22; color: {{ tag.color }}; border-color: {{ tag.color }}44">
+                    {{ tag.name }}
+                </span>
+                <form action="/tags/delete/{{ tag.id }}" method="post" style="display:inline"
+                      onsubmit="return confirm('Удалить тег «{{ tag.name }}»?')">
+                    <button type="submit" class="btn-icon btn-danger" title="Удалить">🗑️</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="hint">Тегов пока нет. Создайте первый!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

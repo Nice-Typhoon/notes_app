@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Мои заметки{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Мои заметки</h1>
+    <a href="/notes/new" class="btn btn-primary">+ Новая заметка</a>
+</div>
+
+<div class="search-filter-bar">
+    <form action="/notes/" method="get" class="search-form">
+        <input type="text" name="search" value="{{ search }}" placeholder="Поиск по заметкам…" class="search-input">
+        <button type="submit" class="btn btn-secondary">Найти</button>
+        {% if search %}
+        <a href="/notes/" class="btn btn-ghost">✕ Сбросить</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if tags %}
+<div class="tag-filter">
+    <a href="/notes/" class="tag-chip {% if not active_tag %}active{% endif %}">Все</a>
+    {% for tag in tags %}
+    <a href="/notes/?tag_id={{ tag.id }}"
+       class="tag-chip {% if active_tag == tag.id|string %}active{% endif %}"
+       style="--tag-color: {{ tag.color }}">
+        {{ tag.name }}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if notes %}
+<div class="notes-grid">
+    {% for note in notes %}
+    <div class="note-card">
+        <div class="note-card-header">
+            <h3 class="note-title">{{ note.title }}</h3>
+            <div class="note-actions">
+                <a href="/notes/{{ note.id }}/edit" class="btn-icon" title="Редактировать">✏️</a>
+                <a href="/reminders/note/{{ note.id }}" class="btn-icon" title="Напоминания">🔔</a>
+                <form action="/notes/{{ note.id }}/delete" method="post" style="display:inline"
+                      onsubmit="return confirm('Удалить заметку?')">
+                    <button type="submit" class="btn-icon" title="Удалить">🗑️</button>
+                </form>
+            </div>
+        </div>
+
+        {% if note.content %}
+        <p class="note-preview">{{ note.content[:150] }}{% if note.content|length > 150 %}…{% endif %}</p>
+        {% endif %}
+
+        <div class="note-footer">
+            <div class="note-tags">
+                {% for tag in note.tags %}
+                <span class="tag-badge" style="background: {{ tag.color }}22; color: {{ tag.color }}; border-color: {{ tag.color }}44">
+                    {{ tag.name }}
+                </span>
+                {% endfor %}
+            </div>
+            <div class="note-meta">
+                {% set pending = note.reminders | selectattr("status", "equalto", "pending") | list %}
+
+                {% if pending %}
+                <span class="reminder-indicator" title="Есть активное напоминание">
+                    🔔 {{ pending[0].remind_at.astimezone(local_tz).strftime('%d.%m %H:%M') }}
+                </span>
+                {% endif %}
+
+                <span class="note-date">
+                    {{ note.updated_at.astimezone(local_tz).strftime('%d.%m.%Y') }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    {% if search %}
+    <p>По запросу «{{ search }}» ничего не найдено.</p>
+    {% else %}
+    <p>У вас пока нет заметок.</p>
+    <a href="/notes/new" class="btn btn-primary">Создать первую заметку</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

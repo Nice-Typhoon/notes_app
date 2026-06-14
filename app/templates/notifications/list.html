@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Уведомления{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Уведомления</h1>
+
+    {% if unread_count > 0 %}
+    <form action="/notifications/read-all" method="post">
+        <button type="submit" class="btn btn-secondary">
+            Отметить все прочитанными
+        </button>
+    </form>
+    {% endif %}
+</div>
+
+{% if notifications %}
+<ul class="notif-list">
+    {% for n in notifications %}
+    <li class="notif-item {% if not n.is_read %}notif-unread{% endif %}">
+        <div class="notif-content">
+            <span class="notif-icon">🔔</span>
+
+            <div>
+                <p class="notif-message">{{ n.message }}</p>
+                <p class="notif-date">
+                    {{ n.created_at.astimezone(local_tz).strftime('%d.%m.%Y %H:%M') }}
+                </p>
+            </div>
+        </div>
+
+        <div class="notif-actions">
+            {% if n.reminder and n.reminder.note %}
+            <a href="/notes/{{ n.reminder.note_id }}/edit" class="btn btn-sm btn-ghost">
+                Открыть заметку
+            </a>
+            {% endif %}
+
+            {% if not n.is_read %}
+            <form action="/notifications/{{ n.id }}/read" method="post" style="display:inline">
+                <button type="submit" class="btn btn-sm btn-secondary">
+                    Прочитано
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<div class="empty-state">
+    <p>Уведомлений пока нет.</p>
+    <p class="hint">Добавьте напоминание к любой заметке — и оно появится здесь.</p>
+</div>
+{% endif %}
+{% endblock %}
